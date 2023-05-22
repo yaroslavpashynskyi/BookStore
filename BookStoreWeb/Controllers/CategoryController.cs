@@ -1,4 +1,5 @@
 ﻿using BookStore.DAL.Data;
+using BookStore.DAL.Repository.IRepository;
 using BookStore.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,14 +7,14 @@ namespace BookStoreWeb.Controllers
 {
     public class CategoryController : Controller
     {
-        private ApplicationDbContext _db;
-        public CategoryController(ApplicationDbContext db)
+        private readonly IUnitOfWork _unitOfWork;
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-                _db = db;
+                _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
-            List<Category> objCategoryList = _db.Categories.ToList();
+            List<Category> objCategoryList = _unitOfWork.Category.GetAll().ToList();
             return View(objCategoryList);
         }
         public IActionResult Create()
@@ -29,8 +30,8 @@ namespace BookStoreWeb.Controllers
             }
             if (ModelState.IsValid)
             {
-                _db.Categories.Add(obj);
-                _db.SaveChanges();
+                _unitOfWork.Category.Add(obj);
+                _unitOfWork.Save();
 
 				TempData["success"] = "Category created successfully";
 
@@ -45,7 +46,7 @@ namespace BookStoreWeb.Controllers
             {
                 return NotFound();
             }
-            Category? categoryFromDb = _db.Categories.FirstOrDefault(c => c.Id == id);
+            Category? categoryFromDb = _unitOfWork.Category.Get(c => c.Id == id);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -61,8 +62,8 @@ namespace BookStoreWeb.Controllers
 			}
 			if (ModelState.IsValid)
 			{
-				_db.Categories.Update(obj);
-				_db.SaveChanges();
+				_unitOfWork.Category.Update(obj);
+				_unitOfWork.Save();
 				TempData["success"] = "Category updated successfully";
 				return RedirectToAction("Index");
 			}
@@ -74,13 +75,13 @@ namespace BookStoreWeb.Controllers
 			{
 				return NotFound();
 			}
-			Category? categoryFromDb = _db.Categories.FirstOrDefault(c => c.Id == id);
+			Category? categoryFromDb = _unitOfWork.Category.Get(c => c.Id == id);
 			if (categoryFromDb == null)
 			{
 				return NotFound();
 			}
-            _db.Remove(categoryFromDb);
-			_db.SaveChanges();
+            _unitOfWork.Category.Remove(categoryFromDb);
+			_unitOfWork.Save();
 
 			TempData["success"] = "Category deleted successfully";
 

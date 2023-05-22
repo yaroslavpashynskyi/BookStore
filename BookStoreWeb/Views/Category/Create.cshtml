@@ -6,15 +6,17 @@
 			<h2 class="text-primary">Create Category</h2>
 			<hr/>
 		</div>
-		<div class="mb-3 row p-1">
-			<label asp-for="Name" class="p-0 pb-1"></label>
-			<input asp-for="Name" type="text" class="form-control" />
-			<span asp-validation-for="Name" class="text-danger pt-1"></span>
-		</div>
-		<div class="mb-3 row p-1">
-			<label asp-for="DisplayOrder" class="p-0 pb-1"></label>
-			<input asp-for="DisplayOrder" type="text" class="form-control" />
-			<span asp-validation-for="DisplayOrder" class="text-danger pt-1"></span>
+		<div class="form-group mb-3">
+			<div class="form-floating mb-3">
+				<input asp-for="Name" type="text" class="form-control" id="floatingInput" placeholder="Name">
+				<label asp-for="Name" for="floatingInput"></label>
+				<span asp-validation-for="Name" class="text-danger pt-1"></span>
+			</div>
+			<div class="form-floating">
+				<input asp-for="DisplayOrder" type="text" class="form-control" id="floatingPassword" placeholder="Password">
+				<label asp-for="DisplayOrder" for="floatingPassword"></label>
+				<span asp-validation-for="DisplayOrder" class="text-danger pt-1"></span>
+			</div>
 		</div>
 		<div class="row">
 			<div class="col-6 col-md-3">

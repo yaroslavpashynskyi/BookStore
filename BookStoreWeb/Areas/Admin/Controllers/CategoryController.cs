@@ -3,14 +3,15 @@ using BookStore.DAL.Repository.IRepository;
 using BookStore.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookStoreWeb.Controllers
+namespace BookStoreWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         public CategoryController(IUnitOfWork unitOfWork)
         {
-                _unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
@@ -18,12 +19,12 @@ namespace BookStoreWeb.Controllers
             return View(objCategoryList);
         }
         public IActionResult Create()
-        { 
+        {
             return View();
         }
         [HttpPost]
         public IActionResult Create(Category obj)
-        { 
+        {
             if (obj.Name == obj.DisplayOrder.ToString())
             {
                 ModelState.AddModelError("name", "The DisplayOrder cannot exactly match the Name");
@@ -33,9 +34,9 @@ namespace BookStoreWeb.Controllers
                 _unitOfWork.Category.Add(obj);
                 _unitOfWork.Save();
 
-				TempData["success"] = "Category created successfully";
+                TempData["success"] = "Category created successfully";
 
-				return RedirectToAction("Index");
+                return RedirectToAction("Index");
             }
             return View();
         }
@@ -54,38 +55,38 @@ namespace BookStoreWeb.Controllers
             return View(categoryFromDb);
         }
         [HttpPost]
-		public IActionResult Edit(Category obj)
-		{
-			if (obj.Name == obj.DisplayOrder.ToString())
-			{
-				ModelState.AddModelError("name", "The DisplayOrder cannot exactly match the Name");
-			}
-			if (ModelState.IsValid)
-			{
-				_unitOfWork.Category.Update(obj);
-				_unitOfWork.Save();
-				TempData["success"] = "Category updated successfully";
-				return RedirectToAction("Index");
-			}
-			return View();
-		}
+        public IActionResult Edit(Category obj)
+        {
+            if (obj.Name == obj.DisplayOrder.ToString())
+            {
+                ModelState.AddModelError("name", "The DisplayOrder cannot exactly match the Name");
+            }
+            if (ModelState.IsValid)
+            {
+                _unitOfWork.Category.Update(obj);
+                _unitOfWork.Save();
+                TempData["success"] = "Category updated successfully";
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
         public IActionResult Delete(int? id)
         {
-			if (id == null || id == 0)
-			{
-				return NotFound();
-			}
-			Category? categoryFromDb = _unitOfWork.Category.Get(c => c.Id == id);
-			if (categoryFromDb == null)
-			{
-				return NotFound();
-			}
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            Category? categoryFromDb = _unitOfWork.Category.Get(c => c.Id == id);
+            if (categoryFromDb == null)
+            {
+                return NotFound();
+            }
             _unitOfWork.Category.Remove(categoryFromDb);
-			_unitOfWork.Save();
+            _unitOfWork.Save();
 
-			TempData["success"] = "Category deleted successfully";
+            TempData["success"] = "Category deleted successfully";
 
-			return RedirectToAction("Index");
-		}
-	}
+            return RedirectToAction("Index");
+        }
+    }
 }
